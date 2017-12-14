@@ -15,5 +15,5 @@ fi
 $KAFKA_DIR/bin/zookeeper-server-start.sh $KAFKA_DIR/config/zookeeper.properties &
 
 sleep 10
-$KAFKA_DIR/bin/kafka-server-start.sh $KAFKA_DIR/config/zookeeper.properties
+$KAFKA_DIR/bin/kafka-server-start.sh $KAFKA_DIR/config/server.properties
 
