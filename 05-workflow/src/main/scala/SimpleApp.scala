@@ -5,6 +5,7 @@ import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.{Seconds, StreamingContext}
+import play.api.libs.json._
 
 object SimpleApp {
   def main(args: Array[String]) {
@@ -44,8 +45,10 @@ object SimpleApp {
 
     System.out.println("#######################")
     val c = stream
-      .map(record => record.value().toString)
-      .reduceByWindow((a, b) => a, Seconds(30), Seconds(10))
+      .map(record => Json.parse(record.value()))
+      .map((json: JsValue) => ((json \ "user").get, 1))
+      .reduceByKeyAndWindow((a, b) => a + b, Seconds(30))
+    //.reduceByKeyAndWindow({ (a, b) => a + b }, Seconds(30), Seconds(10))
     c.print()
     c.context.start()
     System.out.println("Starting")
