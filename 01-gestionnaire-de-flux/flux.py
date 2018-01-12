@@ -43,8 +43,9 @@ with open('extract_tweets_100.json', 'r') as f:
      data = json.load(f)
 # produce asynchronously
 for i in range(100):
-    print("Message : {}".format(data[i]))
-    producer.send('my-topic', "{}".format(data[i]).encode("utf-8"))
+    msg = json.dumps(data[i])
+    print("Message : {}".format(msg))
+    producer.send('my-topic', "{}".format(msg).encode("utf-8"))
 
 # block until all async messages are sent
 producer.flush()

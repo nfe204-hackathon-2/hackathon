@@ -45,7 +45,8 @@ object SimpleApp {
 
     System.out.println("#######################")
     val c = stream
-      .map(record => Json.parse(record.value()))
+      .map(_.value())
+      .map(Json.parse)
       .map((json: JsValue) => ((json \ "user").get, 1))
       .reduceByKeyAndWindow((a, b) => a + b, Seconds(30))
     //.reduceByKeyAndWindow({ (a, b) => a + b }, Seconds(30), Seconds(10))
