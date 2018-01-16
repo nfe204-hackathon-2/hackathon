@@ -47,7 +47,9 @@ object SimpleApp {
     val c = stream
       .map(_.value())
       .map(Json.parse)
-      .map((json: JsValue) => ((json \ "user").get, 1))
+      .map((json: JsValue) => (json \ "text").get.toString())
+      .flatMap(text => text.split(" ").toSeq)
+      .map(w => (w, 1))
       .reduceByKeyAndWindow((a, b) => a + b, Seconds(30))
     //.reduceByKeyAndWindow({ (a, b) => a + b }, Seconds(30), Seconds(10))
     c.print()
