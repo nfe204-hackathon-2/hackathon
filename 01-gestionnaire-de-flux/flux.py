@@ -9,7 +9,7 @@ Created on Tue Dec 19 18:54:55 2017
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import msgpack
-producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
+producer = KafkaProducer(bootstrap_servers=['163.173.230.141:9092','163.173.230.137:9092'])
 
 # Asynchronous by default
 #future = producer.send('my-topic', b'raw_bytes')
@@ -39,16 +39,20 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 #producer.send('json-topic', {'key': 'value'})
 
 import json
-with open('extract_tweets_100.json', 'r') as f:
+import time
+with open('/tmp/extract_tweets_5000000.json', 'r') as f:
      data = json.load(f)
 # produce asynchronously
-for i in range(100):
-    msg = json.dumps(data[i])
-    print("Message : {}".format(msg))
-    producer.send('my-topic', "{}".format(msg).encode("utf-8"))
+for i in range(50000):
+    print("Step {}".format(i))
+    time.sleep(5)
+    for j in range(100):
+        msg = json.dumps(data[i * 100 + j])
+        print("Message : {}".format(msg))
+        producer.send('my-topic', "{}".format(msg).encode("utf-8"))
 
 # block until all async messages are sent
 producer.flush()
 print("DONE")
 # configure multiple retries
-producer = KafkaProducer(retries=5)
+# producer = KafkaProducer(retries=5)
